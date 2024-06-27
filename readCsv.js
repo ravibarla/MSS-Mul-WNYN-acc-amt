@@ -1,5 +1,7 @@
 const csv = require("csv-parser");
 const fs = require("fs");
+const { counterConfig } = require("./symbolAmount");
+let { isCounterEnable, count, countLimit } = counterConfig;
 const readCsvFile = (filepath) => {
   let csvHeaders = [];
   let csvData = [];
@@ -11,7 +13,9 @@ const readCsvFile = (filepath) => {
         csvHeaders.push(header);
       })
       .on("data", (row) => {
-        if (count < 2) {
+        if (isCounterEnable && count < countLimit) {
+          csvData.push(row);
+        } else if (!isCounterEnable) {
           csvData.push(row);
         }
         count++;
